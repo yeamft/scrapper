@@ -9,24 +9,18 @@ FastAPI-based REST API for managing OLX accommodation phone scraping.
 ### 1. Install Dependencies
 
 ```bash
-C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe -m pip install fastapi uvicorn
+pip install -r requirements.txt
 ```
 
 ### 2. Start the API Server
 
-**Option 1: Using batch file**
 ```bash
-start_api.bat
+python api.py
 ```
 
-**Option 2: Using Python**
+Or with uvicorn directly:
 ```bash
-C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe api.py
-```
-
-**Option 3: Using uvicorn directly**
-```bash
-C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe -m uvicorn api:app --reload --host 0.0.0.0 --port 8000
+uvicorn api:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### 3. Access API Documentation
@@ -265,8 +259,7 @@ curl -X POST "http://localhost:8000/api/queue/add" \
 ### Using the Test Script
 
 ```bash
-# Make sure API is running first
-C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe test_api.py
+# Make sure API is running first. Use Postman or curl to test endpoints.
 ```
 
 ### Using curl

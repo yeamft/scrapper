@@ -16,40 +16,40 @@ Python scraper for OLX accommodation phone numbers, with REST API, PostgreSQL, o
 ## Installation
 
 1. **Environment** — Create `.env` from template:
-   ```batch
-   run.bat create_env.py
+   ```bash
+   python create_env.py
    ```
    Edit `.env` with PostgreSQL (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`) and optional Redis (`REDIS_HOST`, `REDIS_PORT`). Optional: `POSTGRES_POOL_SIZE=5` for connection pooling.
 
 2. **Dependencies**
-   ```batch
-   run.bat -m pip install -r requirements.txt
-   run.bat -m playwright install chromium
+   ```bash
+   pip install -r requirements.txt
+   python -m playwright install chromium
    ```
 
 3. **(Optional)** Redis — Install and start Redis if using queue endpoints.
 
 ## Quick start
 
-- **API:** `start_api.bat` → http://localhost:8000, docs at /docs  
+- **API:** `python api.py` → http://localhost:8000, docs at /docs  
 - **Submit URLs:** POST `/api/scrape` or `/api/scrape/batch`  
 - **Process:** POST `/api/process?batch_size=10`  
-- **Data:** GET `/api/urls`, `/api/statistics`; or `run.bat show_database.py`, `clear_db.bat`  
+- **Data:** GET `/api/urls`, `/api/statistics`; or `python show_database.py`, `python clear_db.py`  
 
 Import `OLX_Scraper_API.postman_collection.json` in Postman to test. See **API_DOCUMENTATION.md**.
 
 ## CLI
 
-```batch
-run.bat olx_phone_scraper.py add "https://www.olx.ua/d/uk/obyavlenie/..."
-run.bat olx_phone_scraper.py process --headless
-run.bat olx_phone_scraper.py stats
-run.bat extract_urls_from_search.py
+```bash
+python olx_phone_scraper.py add "https://www.olx.ua/d/uk/obyavlenie/..."
+python olx_phone_scraper.py process --headless
+python olx_phone_scraper.py stats
+python extract_urls_from_search.py
 ```
 
 ## Airflow (optional)
 
-Schedule scraping: install `requirements-airflow.txt` (Python 3.10/3.11), run `setup_airflow.py`, then `start_airflow.bat` and `start_scheduler.bat`. See **AIRFLOW_SETUP.md**.
+Schedule scraping: install `requirements-airflow.txt` (Python 3.10/3.11), run `python setup_airflow.py`, then `airflow webserver --port 8080` and `airflow scheduler`. See **AIRFLOW_SETUP.md**.
 
 ## Project layout
 
@@ -63,7 +63,7 @@ Schedule scraping: install `requirements-airflow.txt` (Python 3.10/3.11), run `s
 | `extract_urls_from_search.py` | Extract URLs from OLX search |
 | `dags/olx_scraper_dag.py` | Airflow DAG (optional) |
 | `.env.example` | Env template → copy to `.env` |
-| `run.bat`, `start_api.bat`, `clear_db.bat`, `create_env.bat` | Launchers |
+| `create_env.py` | Create `.env` from template |
 
 ## Docs
 

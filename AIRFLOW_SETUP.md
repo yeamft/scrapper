@@ -9,8 +9,8 @@ Airflow lets you run the OLX scraper on a schedule (e.g. daily). The DAG uses th
 
 ## Install Airflow
 
-```batch
-run.bat -m pip install -r requirements-airflow.txt
+```bash
+pip install -r requirements-airflow.txt
 ```
 
 If you use Python 3.14, create a venv with 3.11 and install there:
@@ -27,23 +27,24 @@ playwright install chromium
 
 From the project folder:
 
-```batch
-run.bat setup_airflow.py
+```bash
+python setup_airflow.py
 ```
 
 This sets `AIRFLOW_HOME=./airflow_home`, creates `airflow_home/dags`, copies the DAG, and runs `airflow db init`. Default admin user: **admin** / **admin**.
 
 ## Run Airflow
 
-1. **Webserver** (UI): run `start_airflow.bat` → open http://localhost:8080  
-2. **Scheduler** (runs DAGs): run `start_scheduler.bat` in a second terminal  
+1. **Webserver** (UI): `airflow webserver --port 8080` → open http://localhost:8080  
+2. **Scheduler** (runs DAGs): `airflow scheduler` in a second terminal  
 
-Or from the project folder:
+From the project folder (set AIRFLOW_HOME first if needed):
 
-```batch
-set AIRFLOW_HOME=.\airflow_home
-run.bat -m airflow webserver --port 8080
-run.bat -m airflow scheduler
+```bash
+set AIRFLOW_HOME=./airflow_home   # Windows
+# export AIRFLOW_HOME=./airflow_home   # Linux/Mac
+python -m airflow webserver --port 8080
+python -m airflow scheduler
 ```
 
 ## DAG: olx_phone_scraper
