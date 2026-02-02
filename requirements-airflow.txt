@@ -1,0 +1,4 @@
+# Optional: Airflow for scheduled scraping (use Python 3.10 or 3.11; 3.12+ may not be supported)
+# Install: pip install -r requirements-airflow.txt
+apache-airflow==2.8.0
+celery==5.3.4

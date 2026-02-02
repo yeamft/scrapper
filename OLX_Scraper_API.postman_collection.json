@@ -1,0 +1,156 @@
+{
+  "info": {
+    "name": "OLX Scraper API",
+    "description": "Collection to test OLX Phone Scraper API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. API Info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": [""]
+        },
+        "description": "Get API info and list of endpoints"
+      }
+    },
+    {
+      "name": "2. Accept URL for scraping (single)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"url\": \"https://www.olx.ua/d/uk/obyavlenie/na-zavdatku-zdam-v-orendu-1-kmnatnu-kvartiru-IDZKqPF.html\",\n  \"priority\": 0\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/scrape",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "scrape"]
+        },
+        "description": "Submit a single OLX URL for scraping"
+      }
+    },
+    {
+      "name": "3. Accept URLs for scraping (batch)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"urls\": [\n    \"https://www.olx.ua/d/uk/obyavlenie/na-zavdatku-zdam-v-orendu-1-kmnatnu-kvartiru-IDZKqPF.html\"\n  ],\n  \"priority\": 0\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/scrape/batch",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "scrape", "batch"]
+        },
+        "description": "Submit multiple OLX URLs for scraping"
+      }
+    },
+    {
+      "name": "4. Get statistics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/statistics",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "statistics"]
+        },
+        "description": "Get database statistics (total, with_phone, pending, errors)"
+      }
+    },
+    {
+      "name": "5. Get all URLs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/urls?limit=100&skip=0",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "urls"],
+          "query": [
+            {"key": "limit", "value": "100"},
+            {"key": "skip", "value": "0"}
+          ]
+        },
+        "description": "Get all URLs from database"
+      }
+    },
+    {
+      "name": "6. Get URL by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/urls/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "urls", "1"]
+        },
+        "description": "Get a specific URL by ID (change 1 to your id)"
+      }
+    },
+    {
+      "name": "7. Process URLs (run scraper)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/process?batch_size=5&headless=true",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "process"],
+          "query": [
+            {"key": "batch_size", "value": "5"},
+            {"key": "headless", "value": "true"}
+          ]
+        },
+        "description": "Process unprocessed URLs (extract phone numbers). May take 30-60 sec per URL."
+      }
+    },
+    
+    {
+      "name": "8. Queue status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/queue/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "queue", "status"]
+        },
+        "description": "Get Redis queue status (if Redis is running)"
+      }
+    }
+  ]
+}
