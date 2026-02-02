@@ -1,13 +1,11 @@
 # OLX Accommodation Phone Scraper
 
-A Python web scraper for extracting phone numbers from OLX accommodation listings, with a REST API and optional Redis queue.
+Python scraper for OLX accommodation phone numbers, with REST API, PostgreSQL, optional Redis and Airflow.
 
 ## Features
 
-- Extract phone numbers from OLX accommodation URLs (Playwright, anti-detection)
-- SQLite database for URLs and results
-- REST API (FastAPI) for submitting URLs and processing
-- Optional Redis task queue
+- Extract phone numbers from OLX URLs (Playwright, anti-detection)
+- PostgreSQL database; REST API (FastAPI); optional Redis queue; optional Airflow scheduling
 - Batch processing and error handling
 
 ## Requirements
@@ -17,92 +15,57 @@ A Python web scraper for extracting phone numbers from OLX accommodation listing
 
 ## Installation
 
-1. **Install dependencies**
+1. **Environment** — Create `.env` from template:
+   ```batch
+   run.bat create_env.py
+   ```
+   Edit `.env` with PostgreSQL (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`) and optional Redis (`REDIS_HOST`, `REDIS_PORT`). Optional: `POSTGRES_POOL_SIZE=5` for connection pooling.
+
+2. **Dependencies**
    ```batch
    run.bat -m pip install -r requirements.txt
-   ```
-   Or with full path:
-   ```batch
-   C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe -m pip install -r requirements.txt
-   ```
-
-2. **Install Playwright browser**
-   ```batch
    run.bat -m playwright install chromium
    ```
 
-3. **(Optional)** Redis for queue: install and start Redis if you use the queue endpoints.
-
-## Using the project Python path
-
-All commands use the project Python (no PATH needed):
-
-```batch
-run.bat api.py
-run.bat clear_db.py
-run.bat -m pip list
-```
-
-Or full path:
-```batch
-C:\Users\fkt21\AppData\Local\Programs\Python\Python314\python.exe api.py
-```
+3. **(Optional)** Redis — Install and start Redis if using queue endpoints.
 
 ## Quick start
 
-1. **Start the API**
-   ```batch
-   start_api.bat
-   ```
-   API: http://localhost:8000 — Docs: http://localhost:8000/docs
+- **API:** `start_api.bat` → http://localhost:8000, docs at /docs  
+- **Submit URLs:** POST `/api/scrape` or `/api/scrape/batch`  
+- **Process:** POST `/api/process?batch_size=10`  
+- **Data:** GET `/api/urls`, `/api/statistics`; or `run.bat show_database.py`, `clear_db.bat`  
 
-2. **Submit URLs** — POST to `/api/scrape` or `/api/scrape/batch` (see `API_DOCUMENTATION.md` and Postman collection).
+Import `OLX_Scraper_API.postman_collection.json` in Postman to test. See **API_DOCUMENTATION.md**.
 
-3. **Process URLs** — POST `/api/process?batch_size=10` to run the scraper on pending URLs.
-
-4. **View data** — GET `/api/urls`, `/api/statistics`, or use `show_database.py` / `clear_db.bat` for DB admin.
-
-## CLI (scraper only)
-
-From project folder:
+## CLI
 
 ```batch
 run.bat olx_phone_scraper.py add "https://www.olx.ua/d/uk/obyavlenie/..."
 run.bat olx_phone_scraper.py process --headless
 run.bat olx_phone_scraper.py stats
-```
-
-Or extract URLs from a search page:
-```batch
 run.bat extract_urls_from_search.py
 ```
 
-## Database
+## Airflow (optional)
 
-- File: `accommodations.db`
-- Table: `accommodations` (id, url, phone, processed_at, created_at, error)
-- Clear all rows: `clear_db.bat` or `run.bat clear_db.py`
-- Inspect: `run.bat show_database.py`
+Schedule scraping: install `requirements-airflow.txt` (Python 3.10/3.11), run `setup_airflow.py`, then `start_airflow.bat` and `start_scheduler.bat`. See **AIRFLOW_SETUP.md**.
 
-## Project layout (production)
+## Project layout
 
-```
-api.py                    # REST API
-olx_phone_scraper.py      # Core scraper
-redis_queue.py            # Optional Redis queue
-add_to_redis_queue.py     # CLI to add URLs to queue
-clear_db.py               # Clear DB utility
-show_database.py          # DB inspection
-extract_urls_from_search.py  # Extract URLs from OLX search
-requirements.txt
-run.bat / start_api.bat / clear_db.bat
-README.md
-API_DOCUMENTATION.md
-POSTMAN_GUIDE.md
-OLX_Scraper_API.postman_collection.json
-```
+| File / folder | Purpose |
+|---------------|---------|
+| `api.py` | REST API |
+| `olx_phone_scraper.py` | Core scraper |
+| `db.py` | PostgreSQL connection |
+| `redis_queue.py` | Optional Redis queue |
+| `clear_db.py`, `show_database.py` | DB admin |
+| `extract_urls_from_search.py` | Extract URLs from OLX search |
+| `dags/olx_scraper_dag.py` | Airflow DAG (optional) |
+| `.env.example` | Env template → copy to `.env` |
+| `run.bat`, `start_api.bat`, `clear_db.bat`, `create_env.bat` | Launchers |
 
-## Documentation
+## Docs
 
-- **API_DOCUMENTATION.md** — API reference
-- **POSTMAN_GUIDE.md** — Testing with Postman
+- **API_DOCUMENTATION.md** — API reference  
+- **AIRFLOW_SETUP.md** — Airflow setup

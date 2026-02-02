@@ -4,6 +4,7 @@ Run with: python setup_airflow.py
 Use Python 3.10 or 3.11 (Airflow may not support 3.12+).
 """
 import os
+import shutil
 import sys
 import subprocess
 
@@ -26,7 +27,6 @@ def main():
         print(f"Copied airflow.cfg to {cfg_dst}")
 
     # Copy DAG into airflow_home/dags so Airflow can load it
-    import shutil
     src_dag = os.path.join(project_dir, "dags", "olx_scraper_dag.py")
     dst_dag = os.path.join(dags_dir, "olx_scraper_dag.py")
     if os.path.exists(src_dag):

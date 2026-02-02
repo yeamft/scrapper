@@ -1,13 +1,4 @@
-"""
-OLX Phone Scraper - Database Edition
-
-Updated with discovery findings:
-- Cloudflare bypass with anti-detection measures
-- Uses data-testid='show-phone' selector (most reliable)
-- Network monitoring for phone API calls
-- Improved button clicking with scrolling
-- Better error handling for Cloudflare challenges
-"""
+"""OLX accommodation phone scraper (Playwright, PostgreSQL)."""
 from playwright.sync_api import sync_playwright
 import re
 import time

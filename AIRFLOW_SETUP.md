@@ -1,52 +1,62 @@
 # Airflow Setup (Optional)
 
-Airflow lets you run the OLX scraper on a schedule (e.g. daily). The project uses **PostgreSQL** for data; Airflow only orchestrates tasks.
+Airflow lets you run the OLX scraper on a schedule (e.g. daily). The DAG uses the same PostgreSQL database and scraper as the API.
 
-## Python version
+## Requirements
 
-- Use **Python 3.10 or 3.11** for Airflow (3.12+ is often not fully supported).
-- You can keep Python 3.14 for the API and scraper; use a separate venv with 3.11 for Airflow.
+- **Python 3.10 or 3.11** (Airflow may not support 3.12+; use a separate venv if you have 3.14)
+- Project dependencies already installed (`requirements.txt`)
 
-## Install
+## Install Airflow
 
-1. **Create a venv with Python 3.11** (recommended):
-   ```batch
-   py -3.11 -m venv venv_airflow
-   venv_airflow\Scripts\activate
-   ```
+```batch
+run.bat -m pip install -r requirements-airflow.txt
+```
 
-2. **Install base + Airflow deps**:
-   ```batch
-   pip install -r requirements.txt
-   pip install -r requirements-airflow.txt
-   ```
+If you use Python 3.14, create a venv with 3.11 and install there:
 
-3. **Initialize Airflow**:
-   ```batch
-   python setup_airflow.py
-   ```
-   This creates `airflow_home/`, copies the DAG, and runs `airflow db init`.
+```batch
+py -3.11 -m venv venv_airflow
+venv_airflow\Scripts\activate
+pip install -r requirements.txt
+pip install -r requirements-airflow.txt
+playwright install chromium
+```
+
+## Initialize Airflow
+
+From the project folder:
+
+```batch
+run.bat setup_airflow.py
+```
+
+This sets `AIRFLOW_HOME=./airflow_home`, creates `airflow_home/dags`, copies the DAG, and runs `airflow db init`. Default admin user: **admin** / **admin**.
 
 ## Run Airflow
 
-1. **Terminal 1 – webserver**:
-   ```batch
-   start_airflow.bat
-   ```
-   Or: `set AIRFLOW_HOME=%CD%\airflow_home` then `python -m airflow webserver --port 8080`
+1. **Webserver** (UI): run `start_airflow.bat` → open http://localhost:8080  
+2. **Scheduler** (runs DAGs): run `start_scheduler.bat` in a second terminal  
 
-2. **Terminal 2 – scheduler**:
-   ```batch
-   start_scheduler.bat
-   ```
-   Or: `python -m airflow scheduler`
+Or from the project folder:
 
-3. Open **http://localhost:8080** (login: admin / admin).
+```batch
+set AIRFLOW_HOME=.\airflow_home
+run.bat -m airflow webserver --port 8080
+run.bat -m airflow scheduler
+```
 
-## DAG
+## DAG: olx_phone_scraper
 
-- **DAG id:** `olx_phone_scraper`
-- **Schedule:** daily
-- **Tasks:** `init_database` → `process_accommodations` (scrapes pending URLs from PostgreSQL using Playwright).
+- **init_database** – ensures PostgreSQL `accommodations` table exists  
+- **process_accommodations** – processes up to 10 unprocessed URLs (Playwright, same as API)  
 
-Ensure **PostgreSQL** env vars are set (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`) so the DAG can connect to the same DB as the API.
+Schedule: daily. You can trigger a run manually from the UI.
+
+## PostgreSQL
+
+The DAG uses the same DB as the API. Set env vars if needed:
+
+- `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+
+See `db.py` for defaults.

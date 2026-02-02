@@ -16,7 +16,6 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
-# Import scraper and db
 from db import get_connection, init_database
 from olx_phone_scraper import (
     add_accommodation_url,
@@ -41,13 +40,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Initialize database on startup
 @app.on_event("startup")
 async def startup_event():
     init_database()
     print("API started - PostgreSQL database initialized")
 
-# Request/Response Models
 class URLRequest(BaseModel):
     url: HttpUrl
     priority: Optional[int] = 0
@@ -87,8 +84,6 @@ class ProcessResponse(BaseModel):
     message: str
     processed_count: int
 
-# API Endpoints
-
 @app.get("/")
 async def root():
     """API root endpoint"""
@@ -117,15 +112,10 @@ async def add_url(request: URLRequest):
     - **priority**: Priority for Redis queue (if using Redis)
     """
     try:
-        # Add to database
         add_accommodation_url(str(request.url))
-        
-        # Also add to Redis queue if available
         redis_queue = get_redis_queue()
         if redis_queue.is_connected():
             redis_queue.enqueue_url(str(request.url), request.priority)
-        
-        # Get the added record
         conn = get_connection()
         try:
             with conn.cursor() as cursor:

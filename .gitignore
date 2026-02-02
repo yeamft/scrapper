@@ -22,11 +22,11 @@ Thumbs.db
 
 # Logs
 *.log
-airflow_home/logs/
+airflow_home/
 
-# Local config / secrets (uncomment if you use .env)
-# .env
-# .env.local
+# Local secrets (never commit)
+.env
+.env.local
 
 # Optional: ignore DB in version control (uncomment for prod)
 # accommodations.db

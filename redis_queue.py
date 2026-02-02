@@ -1,9 +1,17 @@
 """
 Redis Task Queue Integration
-Handles task queuing and distribution for scraping tasks
+Handles task queuing and distribution for scraping tasks.
+Uses env: REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD (optional).
 """
+import os
 import redis
 import json
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 import time
 from typing import Optional, Dict, Any
 from datetime import datetime
@@ -179,8 +187,13 @@ class RedisTaskQueue:
 _redis_queue = None
 
 def get_redis_queue() -> RedisTaskQueue:
-    """Get or create Redis queue instance"""
+    """Get or create Redis queue instance (reads REDIS_* from env)."""
     global _redis_queue
     if _redis_queue is None:
-        _redis_queue = RedisTaskQueue()
+        _redis_queue = RedisTaskQueue(
+            redis_host=os.environ.get("REDIS_HOST", "localhost"),
+            redis_port=int(os.environ.get("REDIS_PORT", "6379")),
+            redis_db=int(os.environ.get("REDIS_DB", "0")),
+            password=os.environ.get("REDIS_PASSWORD") or None,
+        )
     return _redis_queue
