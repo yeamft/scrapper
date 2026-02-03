@@ -10,6 +10,7 @@ import asyncio
 import sys
 import os
 import io
+from datetime import datetime as dt
 
 # Fix encoding for Windows
 if sys.platform == 'win32':
@@ -129,7 +130,7 @@ async def add_url(request: URLRequest):
                 url=row[1],
                 phone=row[2],
                 processed_at=row[3],
-                created_at=row[4],
+                created_at= dt.strftime(row[4], "%Y-%m-%d %H:%M:%S"),
                 error=row[5]
             )
         else:
@@ -166,7 +167,7 @@ async def accept_url_for_scraping(request: ScrapeURLRequest):
                 url=row[1],
                 phone=row[2],
                 processed_at=row[3],
-                created_at=row[4],
+                created_at=dt.strftime(row[4], "%Y-%m-%d %H:%M:%S"),
                 error=row[5]
             )
         raise HTTPException(status_code=404, detail="URL not found after adding")
@@ -206,7 +207,7 @@ async def accept_urls_for_scraping_batch(request: ScrapeBatchRequest):
                     url=row[1],
                     phone=row[2],
                     processed_at=row[3],
-                    created_at=row[4],
+                    created_at=dt.strftime(row[4], "%Y-%m-%d %H:%M:%S"),
                     error=row[5]
                 ))
         except Exception as e:
@@ -237,7 +238,7 @@ async def get_urls(skip: int = 0, limit: int = 100):
                 url=row[1],
                 phone=row[2],
                 processed_at=row[3],
-                created_at=row[4],
+                created_at=dt.strftime(row[4], "%Y-%m-%d %H:%M:%S"),
                 error=row[5]
             )
             for row in rows
@@ -264,7 +265,7 @@ async def get_url(url_id: int):
             url=row[1],
             phone=row[2],
             processed_at=row[3],
-            created_at=row[4],
+            created_at=dt.strftime(row[4], "%Y-%m-%d %H:%M:%S"),
             error=row[5]
         )
     except HTTPException:
